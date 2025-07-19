@@ -1,9 +1,11 @@
-const publicDir = path.join(__dirname, 'public');
-if (!fs.existsSync(publicDir)) {
-  fs.mkdirSync(publicDir);
 const fs = require('fs');
 const path = require('path');
 const RSS = require('rss');
+
+const publicDir = path.join(__dirname, 'public');
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir);
+}
 
 const items = [
   {
@@ -32,11 +34,6 @@ items.forEach(item => {
   });
 });
 
-const dirPath = path.join(__dirname, 'public');
-if (!fs.existsSync(dirPath)) {
-  fs.mkdirSync(dirPath);
-}
-
-const filePath = path.join(dirPath, 'feed.xml');
-fs.writeFileSync(filePath, feed.xml({ indent: true }));
+const xml = feed.xml({ indent: true });
+fs.writeFileSync(path.join(publicDir, 'feed.xml'), xml);
 console.log('✅ RSS feed generated');
