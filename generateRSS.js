@@ -1,23 +1,34 @@
-import fs from 'fs-extra';
+const fs = require('fs');
+const path = require('path');
+const RSS = require('rss');
 
-const items = await fs.readJson('./feed-data.json');
+const items = [
+  {
+    title: "Example title",
+    description: "This is an example article.",
+    url: "https://example.com/article",
+    date: new Date().toISOString()
+  }
+];
 
-let rssItems = items.map(item => `
-  <item>
-    <title><![CDATA[${item.title}]]></title>
-    <link>${item.link}</link>
-    <pubDate>${new Date(item.pubDate).toUTCString()}</pubDate>
-    <description><![CDATA[${item.description}]]></description>
-  </item>`).join('\n');
+const feed = new RSS({
+  title: 'Jonathan Harris AI News',
+  description: 'Curated AI and tech news, rewritten for clarity',
+  feed_url: 'https://rss-feeds.jonathan-harris.online/ai-news',
+  site_url: 'https://www.jonathan-harris.online',
+  language: 'en',
+  pubDate: new Date().toISOString()
+});
 
-const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-<channel>
-  <title>Jonathan Harris AI News</title>
-  <link>https://www.jonathan-harris.online</link>
-  <description>Curated AI and tech news, rewritten for clarity</description>
-  ${rssItems}
-</channel>
-</rss>`;
+items.forEach(item => {
+  feed.item({
+    title: item.title,
+    description: item.description,
+    url: item.url,
+    date: item.date
+  });
+});
 
-fs.writeFileSync('./public/rss.xml', rss);
+const xml = feed.xml({ indent: true });
+fs.writeFileSync(path.join(__dirname, 'public', 'feed.xml'), xml);
+console.log('✅ RSS feed generated');
