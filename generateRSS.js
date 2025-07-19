@@ -1,7 +1,42 @@
-// File: generateRSS.js import fs from "fs"; import { XMLBuilder } from "fast-xml-parser";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const siteUrl = "https://jonathan-harris.online"; const episodes = JSON.parse(fs.readFileSync("./feed.json"));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const rss = { rss: { "@_version": "2.0", "@_xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd", channel: { title: "Turing's Torch: AI Weekly", link: siteUrl, description: "Weekly AI news with sarcasm and smarts.", language: "en-gb", "itunes:author": "Jonathan Harris", "itunes:image": { "@_href": ${siteUrl}/cover.jpg }, item: episodes.map(ep => ({ title: ep.title, description: ep.description, pubDate: ep.pubDate, guid: ep.guid, enclosure: { "@_url": ep.audioUrl, "@_length": "0", "@_type": "audio/mpeg" }, "itunes:duration": ep.duration.toString() })) } } };
+// Simulated article content (replace with real JSON or fetch logic)
+const items = [
+  {
+    title: "Google’s AI just embarrassed itself again",
+    link: "https://jonathan-harris.online/article/google-flop",
+    pubDate: new Date().toISOString(),
+    description: "Turns out giving a chatbot access to your calendar doesn't mean it can schedule your meetings like an adult. Who knew?"
+  },
+  {
+    title: "Musk rants, OpenAI profits",
+    link: "https://jonathan-harris.online/article/musk-openai",
+    pubDate: new Date().toISOString(),
+    description: "Elon’s still fuming. Meanwhile, OpenAI just made another billion. Not awkward at all."
+  }
+];
 
-const builder = new XMLBuilder({ ignoreAttributes: false }); const xml = builder.build(rss); fs.writeFileSync("./feed.xml", xml);
+const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>Jonathan Harris AI News</title>
+  <link>https://www.jonathan-harris.online</link>
+  <description>Curated AI and tech news, rewritten for clarity</description>
+  ${items.map(item => `
+    <item>
+      <title><![CDATA[${item.title}]]></title>
+      <link>${item.link}</link>
+      <pubDate>${item.pubDate}</pubDate>
+      <description><![CDATA[${item.description}]]></description>
+    </item>
+  `).join('\n')}
+</channel>
+</rss>`;
+
+// Output file to public folder or memory
+fs.writeFileSync(path.join(__dirname, 'feed.xml'), rss, 'utf-8');
+console.log('✅ RSS feed generated at /feed.xml');
