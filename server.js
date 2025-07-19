@@ -1,26 +1,19 @@
-const fs = require('fs-extra');
-import express from 'express';
+const express = require('express');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-
-app.post('/update-feed', async (req, res) => {
-  const newItem = req.body;
-  if (!newItem || !newItem.title || !newItem.link || !newItem.description || !newItem.pubDate) {
-    return res.status(400).json({ error: 'Missing required fields' });
+app.get('/ai-news', (req, res) => {
+  const rssPath = path.join(__dirname, 'public', 'feed.xml');
+  if (!fs.existsSync(rssPath)) {
+    return res.status(404).send('RSS feed not found.');
   }
+  res.set('Content-Type', 'application/rss+xml');
+  fs.createReadStream(rssPath).pipe(res);
+});
 
-  try {
-    const file = './feed-data.json';
-    const existing = (await fs.pathExists(file)) ? await fs.readJson(file) : [];
-
-    existing.unshift(newItem); // newest first
-    await fs.writeJson(file, existing, { spaces: 2 });
-
-    res.json({ success: true, items: existing.length });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update feed' });
-  }
+app.listen(PORT, () => {
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
