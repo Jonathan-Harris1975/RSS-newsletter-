@@ -1,3 +1,6 @@
+const publicDir = path.join(__dirname, 'public');
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir);
 const fs = require('fs');
 const path = require('path');
 const RSS = require('rss');
