@@ -29,6 +29,13 @@ items.forEach(item => {
   });
 });
 
+// Ensure public directory exists
+const outputDir = path.join(__dirname, 'public');
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir);
+}
+
+// Write feed
 const xml = feed.xml({ indent: true });
-fs.writeFileSync(path.join(__dirname, 'public', 'feed.xml'), xml);
+fs.writeFileSync(path.join(outputDir, 'feed.xml'), xml);
 console.log('✅ RSS feed generated');
