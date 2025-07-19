@@ -1,13 +1,13 @@
 {
-  "name": "newsletter-rss",
+  "name": "rss-newsletter",
   "version": "1.0.0",
-  "description": "RSS feed generator for AI newsletter",
-  "main": "server.js",
-  "type": "module",
+  "description": "RSS generator for newsletter",
+  "main": "generateRSS.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "generate": "node generateRSS.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "rss": "^1.2.2"
   }
 }
