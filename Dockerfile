@@ -1,19 +1,12 @@
 FROM node:18
 
-# Set working directory inside container
 WORKDIR /app
 
-# Copy package.json and package-lock.json first
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy everything else
 COPY . .
 
-# Run any setup you need (optional)
-RUN node generateRSS.js
+RUN npm install
+RUN npm run generate
 
-# Start the server
+EXPOSE 3000
+
 CMD ["node", "server.js"]
