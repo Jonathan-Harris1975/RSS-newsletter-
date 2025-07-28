@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title><![CDATA[Jonathan Harris AI News]]></title>
+        <description><![CDATA[Curated AI and tech news, rewritten for clarity]]></description>
+        <link>https://www.jonathan-harris.online</link>
+        <generator>RSS Newsletter Generator v1.0.0</generator>
+        <lastBuildDate>Mon, 28 Jul 2025 08:10:59 GMT</lastBuildDate>
+        <atom:link href="https://rss-feeds.jonathan-harris.online/ai-news" rel="self" type="application/rss+xml"/>
+        <pubDate>Mon, 28 Jul 2025 08:10:59 GMT</pubDate>
+        <language><![CDATA[en]]></language>
+        <item>
+            <title><![CDATA[Persistence Test Article]]></title>
+            <description><![CDATA[This article tests the new persistence mechanism.]]></description>
+            <link>https://example.com/persistence-test</link>
+            <guid isPermaLink="true">https://example.com/persistence-test</guid>
+            <category><![CDATA[Testing]]></category>
+            <category><![CDATA[Persistence]]></category>
+            <dc:creator><![CDATA[Test Bot]]></dc:creator>
+            <pubDate>Mon, 28 Jul 2025 08:10:59 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Example title]]></title>
+            <description><![CDATA[This is an example article.]]></description>
+            <link>https://example.com/article</link>
+            <guid isPermaLink="true">https://example.com/article</guid>
+            <category><![CDATA[AI]]></category>
+            <category><![CDATA[Technology]]></category>
+            <dc:creator><![CDATA[Jonathan Harris]]></dc:creator>
+            <pubDate>Mon, 28 Jul 2025 08:10:06 GMT</pubDate>
+        </item>
+    </channel>
+</rss>
