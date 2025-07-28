@@ -8,18 +8,6 @@
   },
   "items": [
     {
-      "id": "aff70bec-f239-45cd-9b0d-1afcb3f5a039",
-      "title": "Persistence Test Article",
-      "description": "This article tests the new persistence mechanism.",
-      "url": "https://example.com/persistence-test",
-      "date": "2025-07-28T08:10:59.401Z",
-      "author": "Test Bot",
-      "categories": [
-        "Testing",
-        "Persistence"
-      ]
-    },
-    {
       "id": "02a3122b-713d-4165-940a-958d133062da",
       "title": "Example title",
       "description": "This is an example article.",
@@ -34,7 +22,7 @@
   ],
   "metadata": {
     "created": "2025-07-28T08:10:06.608Z",
-    "lastModified": "2025-07-28T08:10:59.401Z",
+    "lastModified": "2025-07-28T08:10:06.608Z",
     "version": "1.0.0"
   }
 }
