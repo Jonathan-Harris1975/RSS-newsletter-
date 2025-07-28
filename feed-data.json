@@ -1,0 +1,44 @@
+{
+  "feedInfo": {
+    "title": "Jonathan Harris AI News",
+    "description": "Curated AI and tech news, rewritten for clarity",
+    "feed_url": "https://rss-feeds.jonathan-harris.online/ai-news",
+    "site_url": "https://www.jonathan-harris.online",
+    "language": "en"
+  },
+  "items": [
+    {
+      "id": "f3e574e7-ecfb-4783-a7d7-ed1ac1fccbb2",
+      "title": "New Test Article",
+      "description": "This is a new article added to test persistence.",
+      "url": "https://example.com/new-test-article",
+      "date": "2025-07-28T08:07:38.654Z",
+      "author": "Manus",
+      "categories": []
+    },
+    {
+      "id": "45357843-713c-478f-a897-f966ed8ea19e",
+      "title": "Test Article via API",
+      "description": "This article was added via the REST API",
+      "url": "https://example.com/test-api-article",
+      "date": "2025-07-26T07:24:14.732Z",
+      "author": "API Tester",
+      "categories": [
+        "API",
+        "Testing"
+      ]
+    },
+    {
+      "id": "07bc7e7c-7251-4d0f-a12f-19ea811fe1fd",
+      "title": "Example title",
+      "description": "This is an example article.",
+      "url": "https://example.com/article",
+      "date": "2025-07-26T07:22:58.334Z",
+      "author": "Jonathan Harris",
+      "categories": [
+        "AI",
+        "Technology"
+      ]
+    }
+  ]
+}
