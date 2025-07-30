@@ -25,21 +25,11 @@ app.use((req, res, next) => {
 });
 
 // Data storage configuration - use persistent directory if available
-const dataDir = process.env.DATA_DIR || path.join(__dirname, "data");
-const dataFile = path.join(dataDir, "feed-data.json");
+const defaultDataDir = path.join(__dirname, "data");
+let dataDir = process.env.DATA_DIR || defaultDataDir;
+let dataFile = path.join(dataDir, "feed-data.json");
 
 // Ensure data directory exists
-function ensureDataDirectory() {
-  console.log(`[DEBUG] ensureDataDirectory: Checking directory ${dataDir}`);
-  if (!fs.existsSync(dataDir)) {
-    try {
-      fs.mkdirSync(dataDir, { recursive: true });
-      console.log(`[DEBUG] 📁 Created data directory: ${dataDir}`);
-    } catch (err) {
-      console.error(`[ERROR] Failed to create data directory ${dataDir}: ${err.message}`);
-    }
-  }
-}
 function ensureDataDirectory() {
   console.log(`[DEBUG] ensureDataDirectory: Checking directory ${dataDir}`);
   if (!fs.existsSync(dataDir)) {
@@ -75,6 +65,7 @@ function ensureDataDirectory() {
     }
   }
 }
+
 // Initialize data file if it doesn't exist
 function initializeDataFile() {
   ensureDataDirectory();
@@ -161,7 +152,7 @@ function loadData() {
         console.error(`[ERROR] ❌ Backup restore failed from ${backupFile}: ${backupError.message}`);
       }
     }
-    const defaultDataDir = path.join(__dirname, "data");
+    
     // If all else fails, return minimal structure
     console.log("[DEBUG] Returning minimal data structure as fallback.");
     return { 
@@ -558,37 +549,6 @@ app.post("/api/backup", (req, res) => {
   }
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(`[ERROR] ❌ Server error: ${err.stack}`);
-  res.status(500).json({
-    success: false,
-    message: "Something went wrong!",
-    timestamp: new Date().toISOString()
-  });
-});
-
-// 404 handler
-app.use((req, res) => {
-  console.log(`[DEBUG] 404: Endpoint not found for ${req.method} ${req.originalUrl}`);
-  res.status(404).json({
-    success: false,
-    message: "Endpoint not found",
-    availableEndpoints: [
-      "GET /",
-      "GET /health",
-      "GET /feed.xml",
-      "GET /api/feed/items",
-      "POST /api/feed/items",
-      "PUT /api/feed/items/:id",
-      "DELETE /api/feed/items/:id",
-      "GET /api/feed/info",
-      "PUT /api/feed/info",
-      "POST /api/feed/regenerate",
-      "POST /api/backup"
-    ]
-  });
-});
 // Bulk import endpoint
 app.post("/api/feed/bulk", (req, res) => {
   console.log("[DEBUG] POST /api/feed/bulk endpoint accessed.");
@@ -645,24 +605,43 @@ app.post("/api/feed/bulk", (req, res) => {
   }
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(`[ERROR] ❌ Server error: ${err.stack}`);
+  res.status(500).json({
+    success: false,
+    message: "Something went wrong!",
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  console.log(`[DEBUG] 404: Endpoint not found for ${req.method} ${req.originalUrl}`);
+  res.status(404).json({
+    success: false,
+    message: "Endpoint not found",
+    availableEndpoints: [
+      "GET /",
+      "GET /health",
+      "GET /feed.xml",
+      "GET /api/feed/items",
+      "POST /api/feed/items",
+      "PUT /api/feed/items/:id",
+      "DELETE /api/feed/items/:id",
+      "GET /api/feed/info",
+      "PUT /api/feed/info",
+      "POST /api/feed/regenerate",
+      "POST /api/backup",
+      "POST /api/feed/bulk"
+    ]
+  });
+});
+
 // Graceful shutdown
 process.on("SIGTERM", () => {
   console.log("🛑 SIGTERM received, shutting down gracefully...");
   process.exit(0);
 });
 
-process.on("SIGINT", () => {
-  console.log("🛑 SIGINT received, shutting down gracefully...");
-  process.exit(0);
-});
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📰 RSS feed available at: http://localhost:${PORT}/feed.xml`);
-  console.log(`🔧 API endpoints available at: http://localhost:${PORT}/api/feed/`);
-  console.log(`💚 Health check available at: http://localhost:${PORT}/health`);
-  console.log(`📁 Data persisted to: ${dataFile}`);
-  console.log(`[DEBUG] Server started at ${new Date().toISOString()}`);
-});
-
-
+process.on("SIGINT", (
