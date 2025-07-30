@@ -1,0 +1,67 @@
+{
+  "feedInfo": {
+    "title": "Jonathan Harris AI News",
+    "description": "Curated AI and tech news, rewritten for clarity",
+    "feed_url": "https://rss-feeds.jonathan-harris.online/ai-news",
+    "site_url": "https://www.jonathan-harris.online",
+    "language": "en"
+  },
+  "items": [
+    {
+      "id": "f6afd65a-715d-41f5-a33b-4f172caeafda",
+      "title": "New Test Item 2",
+      "description": "This is the second new item.",
+      "url": "https://example.com/new-test-item-2",
+      "date": "2025-07-30T00:21:33.907Z",
+      "author": "TestUser",
+      "categories": []
+    },
+    {
+      "id": "a0d8dc8e-515b-4ec9-8f24-b6a9e9c9061b",
+      "title": "New Test Item 1",
+      "description": "This is the first new item.",
+      "url": "https://example.com/new-test-item-1",
+      "date": "2025-07-30T00:21:30.069Z",
+      "author": "TestUser",
+      "categories": []
+    },
+    {
+      "id": "0f167237-adc0-481f-b6b4-3ce9ad022bd7",
+      "title": "Test Persistence Again",
+      "description": "This is another test for persistence.",
+      "url": "https://example.com/test-persistence-again",
+      "date": "2025-07-29T01:01:47.602Z",
+      "author": "Manus",
+      "categories": []
+    },
+    {
+      "id": "aff70bec-f239-45cd-9b0d-1afcb3f5a039",
+      "title": "Persistence Test Article",
+      "description": "This article tests the new persistence mechanism.",
+      "url": "https://example.com/persistence-test",
+      "date": "2025-07-28T08:10:59.401Z",
+      "author": "Test Bot",
+      "categories": [
+        "Testing",
+        "Persistence"
+      ]
+    },
+    {
+      "id": "02a3122b-713d-4165-940a-958d133062da",
+      "title": "Example title",
+      "description": "This is an example article.",
+      "url": "https://example.com/article",
+      "date": "2025-07-28T08:10:06.608Z",
+      "author": "Jonathan Harris",
+      "categories": [
+        "AI",
+        "Technology"
+      ]
+    }
+  ],
+  "metadata": {
+    "created": "2025-07-28T08:10:06.608Z",
+    "lastModified": "2025-07-30T00:21:33.907Z",
+    "version": "1.0.0"
+  }
+}
