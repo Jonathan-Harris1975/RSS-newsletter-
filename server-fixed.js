@@ -644,4 +644,17 @@ process.on("SIGTERM", () => {
   process.exit(0);
 });
 
-process.on("SIGINT", (
+process.on("SIGINT", () => {
+  console.log("🛑 SIGINT received, shutting down gracefully...");
+  process.exit(0);
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📰 RSS feed available at: http://localhost:${PORT}/feed.xml`);
+  console.log(`🔧 API endpoints available at: http://localhost:${PORT}/api/feed/`);
+  console.log(`💚 Health check available at: http://localhost:${PORT}/health`);
+  console.log(`📁 Using data directory: ${dataDir}`);
+  console.log(`📄 Using data file: ${dataFile}`);
+  console.log(`[DEBUG] Server started at ${new Date().toISOString()}`);
+})
