@@ -161,7 +161,7 @@ function loadData() {
         console.error(`[ERROR] ❌ Backup restore failed from ${backupFile}: ${backupError.message}`);
       }
     }
-    
+    const defaultDataDir = path.join(__dirname, "data");
     // If all else fails, return minimal structure
     console.log("[DEBUG] Returning minimal data structure as fallback.");
     return { 
