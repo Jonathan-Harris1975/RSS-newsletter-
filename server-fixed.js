@@ -40,7 +40,41 @@ function ensureDataDirectory() {
     }
   }
 }
-
+function ensureDataDirectory() {
+  console.log(`[DEBUG] ensureDataDirectory: Checking directory ${dataDir}`);
+  if (!fs.existsSync(dataDir)) {
+    try {
+      fs.mkdirSync(dataDir, { recursive: true });
+      console.log(`[DEBUG] 📁 Created data directory: ${dataDir}`);
+      
+      // Ensure proper permissions
+      fs.chmodSync(dataDir, 0o777); // RWX for owner, group, others
+      console.log(`[DEBUG] Set permissions on data directory: ${dataDir}`);
+    } catch (err) {
+      console.error(`[ERROR] Failed to create data directory ${dataDir}: ${err.message}`);
+      // Try to continue with default directory if Render directory fails
+      if (dataDir !== defaultDataDir) {
+        dataDir = defaultDataDir;
+        dataFile = path.join(defaultDataDir, "feed-data.json");
+        ensureDataDirectory();
+      }
+    }
+  } else {
+    // Verify directory is writable
+    try {
+      fs.accessSync(dataDir, fs.constants.W_OK);
+      console.log(`[DEBUG] Data directory ${dataDir} is writable`);
+    } catch (err) {
+      console.error(`[ERROR] Data directory ${dataDir} is not writable: ${err.message}`);
+      // Fall back to default directory if Render directory isn't writable
+      if (dataDir !== defaultDataDir) {
+        dataDir = defaultDataDir;
+        dataFile = path.join(defaultDataDir, "feed-data.json");
+        ensureDataDirectory();
+      }
+    }
+  }
+}
 // Initialize data file if it doesn't exist
 function initializeDataFile() {
   ensureDataDirectory();
