@@ -555,6 +555,61 @@ app.use((req, res) => {
     ]
   });
 });
+// Bulk import endpoint
+app.post("/api/feed/bulk", (req, res) => {
+  console.log("[DEBUG] POST /api/feed/bulk endpoint accessed.");
+  const newItems = req.body.items;
+  
+  if (!Array.isArray(newItems)) {
+    return res.status(400).json({
+      success: false,
+      message: "Expected an array of items in the 'items' property"
+    });
+  }
+
+  const data = loadData();
+  
+  // Add new items with validation
+  let addedCount = 0;
+  const errors = [];
+  
+  newItems.forEach(item => {
+    if (!item.title || !item.description || !item.url) {
+      errors.push(`Item missing required fields: ${JSON.stringify(item)}`);
+      return;
+    }
+    
+    data.items.unshift({
+      id: uuidv4(),
+      title: item.title,
+      description: item.description,
+      url: item.url,
+      date: item.date || new Date().toISOString(),
+      author: item.author || "",
+      categories: item.categories || []
+    });
+    addedCount++;
+  });
+
+  if (saveData(data)) {
+    generateRSSFeed();
+    console.log(`[DEBUG] Bulk import: added ${addedCount} items, ${errors.length} errors`);
+    res.json({
+      success: true,
+      message: "Bulk import completed",
+      addedCount,
+      errorCount: errors.length,
+      errors: errors.length > 0 ? errors : undefined,
+      totalItems: data.items.length
+    });
+  } else {
+    console.error("[ERROR] Failed to save data after bulk import");
+    res.status(500).json({
+      success: false,
+      message: "Failed to save imported items"
+    });
+  }
+});
 
 // Graceful shutdown
 process.on("SIGTERM", () => {
