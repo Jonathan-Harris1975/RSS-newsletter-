@@ -1,183 +1,92 @@
-# RSS Feed Generator with API
+# PSG main-first (RSS-aware)
 
-A Node.js Express server that generates RSS feeds and provides a RESTful API for managing feed items dynamically.
+## Endpoints
+- GET  /healthz
+- ALL  /compose/main    # accepts { "prompt": "..." } OR { "prompt": { rssFeedUrl, prompt, maxItems, maxAgeDays } }
+- ALL  /compose/intro   # { "prompt": "..." }
+- ALL  /compose/outro   # { "prompt": "..." }
+- POST /compose/ready-for-tts  # { intro, main, outro, name, r2Prefix }
 
-## Features
+## Make: MAIN from RSS object
+POST /compose/main
+Content-Type: application/json
+{
+  "prompt": {
+    "rssFeedUrl": "https://example.com/feed.rss",
+    "prompt": "Gemini 2.5; Informatica 5-minute mapping; privacy change.",
+    "maxItems": 5,
+    "maxAgeDays": 7
+  },
+  "name": "en-GB-Wavenet-B",
+  "r2Prefix": "podcast"
+}
 
-- **Dynamic RSS Feed Generation**: Automatically generates RSS XML at `/feed.xml`
-- **RESTful API**: Full CRUD operations for feed items
-- **Persistent Storage**: JSON file-based storage for feed data
-- **CORS Support**: Cross-origin requests enabled for integration
-- **Auto-regeneration**: RSS feed updates automatically when items change
 
-## Installation
+## Config
+Set per-endpoint model and temperature via env:
+- `OPENAI_MODEL_INTRO`, `OPENAI_TEMP_INTRO`
+- `OPENAI_MODEL_MAIN`,  `OPENAI_TEMP_MAIN`
+- `OPENAI_MODEL_OUTRO`, `OPENAI_TEMP_OUTRO`
 
-1. Install dependencies:
-```bash
-npm install
-```
+## Usage
+- `POST /intro`  { "prompt": "..." }
+- `POST /main`   { "prompt": "..." } or { "prompt": { "rssFeedUrl": "...", "prompt": "...", "maxItems": 5, "maxAgeDays": 7 } }
+- `POST /outro`  { "prompt": "..." }
+- Back-compat: `/compose/intro|main|outro` accept { "text": "..." } as well.
 
-2. Start the server:
-```bash
-npm start
-```
 
-The server will run on port 3000 by default (or PORT environment variable).
 
 ## API Endpoints
 
-### Feed Items
+### Health Check
+**GET** `/health`  
+Returns `200 OK` if the server is running.
 
-#### GET /api/feed/items
-Get all feed items.
+### Generate Episode (`/generate`)
+**POST** `/generate`  
+Generates a full podcast episode with:
+- Title & Description prompt
+- SEO Keywords prompt
+- Artwork prompt
+- Cleaned transcript
+- TTS text chunks (≤4500 characters each)
 
-**Response:**
+Example payload:
 ```json
 {
-  "success": true,
-  "items": [...],
-  "count": 5
+  "newsItems": "string with news items",
+  "episodeSummary": "string with full episode text"
 }
 ```
 
-#### GET /api/feed/items/:id
-Get a specific feed item by ID.
+### Main AI Summary (`/main`)
+**POST** `/main`  
+Processes RSS feed articles using your chosen prompt, style, and limits.
 
-#### POST /api/feed/items
-Add a new feed item.
-
-**Request Body:**
+Example payload:
 ```json
 {
-  "title": "Article Title",
-  "description": "Article description or summary",
-  "url": "https://example.com/article",
-  "author": "Author Name (optional)",
-  "categories": ["category1", "category2"]
+  "rssFeedUrl": "https://rss-feeds.jonathan-harris.online/ai-news",
+  "prompt": "Rewrite each AI news summary as a standalone podcast segment. Tone: intelligent, sarcastic British Gen X — dry wit, cultural commentary, and confident delivery.",
+  "temperature": 0.70,
+  "maxItems": 30,
+  "maxAgeDays": 7,
+  "return": "merged"
 }
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Item added successfully",
-  "item": {...}
-}
-```
+### Intro (`/intro`)
+**POST** `/intro`  
+Generates an introduction for your episode.
 
-#### PUT /api/feed/items/:id
-Update an existing feed item.
+### Outro (`/outro`)
+**POST** `/outro`  
+Generates an outro for your episode.
 
-**Request Body:** Same as POST, all fields optional.
+### Compose (`/compose`)
+**POST** `/compose`  
+Combines intro, main, and outro into a single episode.
 
-#### DELETE /api/feed/items/:id
-Delete a feed item.
-
-### Feed Information
-
-#### GET /api/feed/info
-Get RSS feed metadata.
-
-#### PUT /api/feed/info
-Update RSS feed metadata.
-
-**Request Body:**
-```json
-{
-  "title": "Feed Title",
-  "description": "Feed Description",
-  "feed_url": "https://example.com/feed.xml",
-  "site_url": "https://example.com",
-  "language": "en"
-}
-```
-
-### Utility
-
-#### POST /api/feed/regenerate
-Manually trigger RSS feed regeneration.
-
-## RSS Feed
-
-The RSS feed is available at `/feed.xml` and updates automatically when items are modified through the API.
-
-## Integration Examples
-
-### Adding an item via cURL:
-```bash
-curl -X POST http://localhost:3000/api/feed/items \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "New Article",
-    "description": "This is a new article",
-    "url": "https://example.com/new-article",
-    "author": "John Doe",
-    "categories": ["Tech", "News"]
-  }'
-```
-
-### Integration with Make.com
-This API is designed to work seamlessly with Make.com (formerly Integromat) for automation:
-
-1. **Webhook Trigger**: Set up a webhook in Make.com to receive data
-2. **HTTP Module**: Use the HTTP module to POST data to `/api/feed/items`
-3. **Data Transformation**: Map incoming data to the required JSON structure
-4. **Error Handling**: Check the `success` field in responses
-
-### Example Make.com Scenario:
-1. **RSS Module**: Monitor external RSS feeds
-2. **Filter**: Process only new items
-3. **HTTP Request**: POST to your RSS API
-4. **Email/Slack**: Notify on successful addition
-
-## Data Storage
-
-Feed data is stored in `feed-data.json` with the following structure:
-
-```json
-{
-  "feedInfo": {
-    "title": "Feed Title",
-    "description": "Feed Description",
-    "feed_url": "https://example.com/feed.xml",
-    "site_url": "https://example.com",
-    "language": "en"
-  },
-  "items": [
-    {
-      "id": "uuid-here",
-      "title": "Article Title",
-      "description": "Article description",
-      "url": "https://example.com/article",
-      "date": "2025-01-26T10:00:00.000Z",
-      "author": "Author Name",
-      "categories": ["category1", "category2"]
-    }
-  ]
-}
-```
-
-## Deployment
-
-The application includes Docker support and can be deployed to various platforms:
-
-- **Render**: Use the included `render.yaml`
-- **Docker**: Use the included `Dockerfile`
-- **Heroku**: Works out of the box
-- **Vercel/Netlify**: For serverless deployment
-
-## CORS
-
-Cross-origin requests are enabled by default, allowing integration from any domain. This is essential for Make.com and other automation tools.
-
-## Error Handling
-
-All API endpoints return consistent JSON responses with `success` boolean and appropriate HTTP status codes:
-
-- `200`: Success
-- `201`: Created
-- `400`: Bad Request
-- `404`: Not Found
-- `500`: Server Error
-
+### LLM Proxy (`/_llm`)
+**POST** `/_llm`  
+Directly interacts with the AI model using custom prompts.
