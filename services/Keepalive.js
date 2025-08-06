@@ -12,7 +12,10 @@ async function pingServer() {
   }
 }
 
-setInterval(pingServer, 300000); // Ping every 5 min
-pingServer(); // Initial ping
+// Ping every 5 minutes
+setInterval(pingServer, 300000);
+
+// Initial ping
+pingServer();
 
 console.log('Keepalive service started');
